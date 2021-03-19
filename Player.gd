@@ -4,21 +4,30 @@ signal hit
 
 export var speed = 400
 var screen_size
+var target = Vector2()
 
 func _ready():
+	hide()
 	screen_size = get_viewport_rect().size
+
+
+func _input(event):
+	if event is InputEventScreenTouch and event.pressed:
+		target = event.position
 
 
 func _process(delta):
 	var velocity = Vector2()
-	if Input.is_action_pressed("player_right"):
-		velocity.x += 1
-	if Input.is_action_pressed("player_left"):
-		velocity.x -= 1
-	if Input.is_action_pressed("player_up"):
-		velocity.y -= 1
-	if Input.is_action_pressed("player_down"):
-		velocity.y += 1
+	if position.distance_to(target) > 10:
+		velocity = target - position
+	#if Input.is_action_pressed("player_right"):
+	#	velocity.x += 1
+	#if Input.is_action_pressed("player_left"):
+	#	velocity.x -= 1
+	#if Input.is_action_pressed("player_up"):
+	#	velocity.y -= 1
+	#if Input.is_action_pressed("player_down"):
+	#	velocity.y += 1
 	
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
@@ -48,5 +57,6 @@ func _on_Player_body_entered(body):
 
 func start(pos):
 	position = pos
+	target = pos
 	show()
 	$CollisionShape2D.disabled = false
